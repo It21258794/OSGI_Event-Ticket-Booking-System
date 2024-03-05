@@ -3,7 +3,9 @@ Bundle-ManifestVersion: 2
 Bundle-Name: EventSchedulePublisher
 Bundle-SymbolicName: EventSchedulePublisher
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: eventschedulepublisher.Activator
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-Activator: com.mtit.eventscheduleservice.EventScheduleServiceActivator
 Import-Package: org.osgi.framework;version="1.3.0"
-Bundle-ActivationPolicy: lazy
+Export-Package: com.mtit.eventscheduleservice
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+
+
