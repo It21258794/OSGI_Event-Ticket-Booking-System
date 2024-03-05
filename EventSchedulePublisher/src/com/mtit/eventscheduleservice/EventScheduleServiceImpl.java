@@ -1,12 +1,17 @@
 package com.mtit.eventscheduleservice;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.mtit.databaseconnectionservice.DatabaseConnectionService;
 
@@ -19,8 +24,47 @@ public class EventScheduleServiceImpl implements EventScheduleServicePublish{
     }
 	
 	@Override
-	public String getEventSchedule() {
-		return "Execute the getEvent service of EventSchedulePublisher";
+	public List<Event> getEventsByDateRange(LocalDate startDate, LocalDate endDate){
+		
+		 List<Event> events = new ArrayList<>();
+		
+		if (databaseConnectionService == null) {
+            System.err.println("DatabaseConnectionService is not set.");
+        }
+
+        Connection connection = databaseConnectionService.getConnection();
+        if (connection == null) {
+            System.err.println("Database connection is null.");
+        }
+        
+        try(PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM events WHERE event_date BETWEEN ? AND ?")) {
+        	
+        	 Date sqlStartDate = Date.valueOf(startDate);
+             Date sqlEndDate = Date.valueOf(endDate);
+        	//set parameters
+        	preparedStatement.setDate(1, sqlStartDate);
+        	preparedStatement.setDate(2, sqlEndDate);
+        	
+        	//Execute the query
+        	ResultSet resultset = preparedStatement.executeQuery();
+        	while(resultset.next()) {
+        		Event event = new Event();
+        		event.setId(resultset.getInt("id"));
+        		event.setEventName(resultset.getString("name"));
+        		event.setEventDate(resultset.getString("event_date"));
+        		event.setStartTime(resultset.getString("start_time"));
+        		event.setEndTime(resultset.getString("end_time"));
+        		event.setVenue(resultset.getString("venue"));
+        		event.setTicketPrice(resultset.getDouble("ticket_price"));
+        		
+        		events.add(event);
+        	}
+        		
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return events;
 	}
 
 	@Override
