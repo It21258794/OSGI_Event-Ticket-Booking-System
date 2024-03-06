@@ -14,28 +14,28 @@ public class EventScheduleServiceActivator implements BundleActivator {
 	private DatabaseConnectionService databaseConnectionService;
 	// Declare a object type of ServiceReference for dbService
 	ServiceReference dbServiceReference;
-	
+
 	public void start(BundleContext context) throws Exception {
 		System.out.println("Event Schedule Publisher Started");
-		
+
 		// Get the DatabaseConnectionService from the OSGi service registry
 		dbServiceReference = context.getServiceReference(DatabaseConnectionService.class.getName());
-		databaseConnectionService = (DatabaseConnectionService)context.getService(dbServiceReference);
+		databaseConnectionService = (DatabaseConnectionService) context.getService(dbServiceReference);
 
 		EventScheduleServicePublish eventScheduleServicePublish = new EventScheduleServiceImpl();
-		//pass the database connection to the method setDatabaseConnection
+		// pass the database connection to the method setDatabaseConnection
 		eventScheduleServicePublish.setDatabaseConnectionService(databaseConnectionService);
 
-		// Register the EventScheduleServicePublish implementation with the service registry
-		publishEventScheduleRegistration = context.registerService(EventScheduleServicePublish.class.getName(), eventScheduleServicePublish, null);
+		// Register the EventScheduleServicePublish implementation with the service
+		// registry
+		publishEventScheduleRegistration = context.registerService(EventScheduleServicePublish.class.getName(),
+				eventScheduleServicePublish, null);
 
-		
 	}
-
 
 	public void stop(BundleContext context) throws Exception {
 		System.out.println("Event Schedule Publisher Stoped");
-		//unregister the EventScheduleServicePublish
+		// unregister the EventScheduleServicePublish
 		publishEventScheduleRegistration.unregister();
 	}
 
