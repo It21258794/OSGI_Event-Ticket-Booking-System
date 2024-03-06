@@ -50,10 +50,10 @@ public class EventScheduleSubscriberActivator implements BundleActivator {
 		System.out.println("Enter Event Date as (YYYY-MM-DD) :");
 		String date = scanner.nextLine();
 		
-		System.out.println("Enter Event Start Time (HH:MM:SS) :");
+		System.out.println("Enter Event Start Time (HH:MM:SS) 24hour format:");
 		String startTime = scanner.nextLine();
 		
-		System.out.println("Enter Event End Time (HH:MM:SS) :");
+		System.out.println("Enter Event End Time (HH:MM:SS) 24hour format:");
 		String endTime = scanner.nextLine();
 		
 		System.out.println("Enter Event Venue :");
@@ -61,11 +61,13 @@ public class EventScheduleSubscriberActivator implements BundleActivator {
 		
 		System.out.println("Enter Event Ticket Price: ");
 		double ticketPrice = scanner.nextDouble();
+		
+		System.out.println("Enter Event budget: ");
+		double budget = scanner.nextDouble();
 		scanner.nextLine();// Consume newline character
 
-		System.out.println(eventName);
 		// Call addEvent method to add the event
-		eventScheduleServicePublish.addEvent(eventName, date, startTime, endTime, venue, ticketPrice);
+		eventScheduleServicePublish.addEvent(eventName, date, startTime, endTime, venue, ticketPrice,budget);
 	}
 	
 	
