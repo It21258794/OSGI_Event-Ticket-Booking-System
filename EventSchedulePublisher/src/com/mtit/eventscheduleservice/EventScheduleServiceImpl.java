@@ -28,15 +28,18 @@ public class EventScheduleServiceImpl implements EventScheduleServicePublish{
 		
 		 List<Event> events = new ArrayList<>();
 		
+		 //checks the databaseConnectionService is null
 		if (databaseConnectionService == null) {
             System.err.println("DatabaseConnectionService is not set.");
         }
 
+		// invoke the getConnection method in db connection service  and get the connection
         Connection connection = databaseConnectionService.getConnection();
         if (connection == null) {
             System.err.println("Database connection is null.");
         }
         
+        // create the prepare statement and run the select query
         try(PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM events WHERE event_date BETWEEN ? AND ?")) {
         	
         	 Date sqlStartDate = Date.valueOf(startDate);
@@ -47,6 +50,7 @@ public class EventScheduleServiceImpl implements EventScheduleServicePublish{
         	
         	//Execute the query
         	ResultSet resultset = preparedStatement.executeQuery();
+        	//loop through the output resultset and add attributes to event object
         	while(resultset.next()) {
         		Event event = new Event();
         		event.setId(resultset.getInt("id"));
@@ -69,13 +73,14 @@ public class EventScheduleServiceImpl implements EventScheduleServicePublish{
 
 	@Override
 	public void addEvent(String eventName, String date, String startTime, String endTime, String venue,
-			double ticketPrice) {
+			double ticketPrice, double budget) {
 		
+		 //checks the databaseConnectionService is null
 		 if (databaseConnectionService == null) {
 	            System.err.println("DatabaseConnectionService is not set.");
 	            return;
 	        }
-
+		// invoke the getConnection method in db connection service  and get the connection
 	        Connection connection = databaseConnectionService.getConnection();
 	        if (connection == null) {
 	            System.err.println("Database connection is null.");
@@ -94,13 +99,14 @@ public class EventScheduleServiceImpl implements EventScheduleServicePublish{
 		Timestamp eventEndTime = Timestamp.valueOf(endDateTime);
 		
 		try (PreparedStatement statement = connection.prepareStatement(
-                "INSERT INTO events (name, event_date, start_time, end_time, venue, ticket_price) VALUES (?, ?, ?, ?, ?, ?)")) {
+                "INSERT INTO events (name, event_date, start_time, end_time, venue, ticket_price,budget) VALUES (?, ?, ?, ?, ?, ?, ?)")) {
             statement.setString(1, eventName);
             statement.setString(2, date);
             statement.setTimestamp(3, eventStartTime);
             statement.setTimestamp(4, eventEndTime);
             statement.setString(5, venue);
             statement.setDouble(6, ticketPrice);
+            statement.setDouble(7, budget);
             int rowsInserted = statement.executeUpdate();
             if (rowsInserted > 0) {
                 System.out.println("Event added successfully.");
