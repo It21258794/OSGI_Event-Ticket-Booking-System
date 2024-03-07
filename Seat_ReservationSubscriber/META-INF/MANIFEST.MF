@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Seat_ReservationSubscriber
+Bundle-SymbolicName: Seat_ReservationSubscriber
+Bundle-Version: 1.0.0.qualifier
+Export-Package: seat_reservationsubscriber
+Import-Package: com.mtit.databaseconnectionservice,
+ org.osgi.framework,
+ seat_reservationpublisher
+Bundle-Activator: seat_reservationsubscriber.Activator
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Automatic-Module-Name: Seat.ReservationSubscriber
+ org.osgi.framework;version="1.3.0",
+ seat_reservationpublisher
+Bundle-ActivationPolicy: lazy
