@@ -139,7 +139,7 @@ public class ServicePublishImpl implements SeatServicePublish {
                         System.out.println("Booking ID: " + bookingId);
                         System.out.println("Name: " + name);
                         System.out.println("Contact: " + contact);
-                        System.out.println("Seat Type: " + type);
+                        System.out.println("Seat type: " + type);
                         System.out.println("Count: " + count);
 
                         // Update eventdetail table based on canceled seat type
