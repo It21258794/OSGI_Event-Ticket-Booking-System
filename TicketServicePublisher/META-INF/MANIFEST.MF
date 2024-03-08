@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: TicketServicePublisher
+Bundle-SymbolicName: TicketServicePublisher
+Bundle-Version: 1.0.0.qualifier
+Export-Package: ticketservicepublisher
+Bundle-Activator: ticketservicepublisher.ServiceActivator
+Bundle-RequiredExecutionEnvironment: JavaSE-17
+Import-Package: org.osgi.framework;version="1.3.0"
+
