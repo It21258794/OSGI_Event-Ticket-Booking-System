@@ -49,7 +49,7 @@ public class ServicePublishImpl implements SeatServicePublish {
     			        }
     			    }
     			} catch (SQLException e) {
-    			    e.printStackTrace();
+    			    System.out.println("try again");
     			}
 
     			} 
@@ -93,7 +93,7 @@ public class ServicePublishImpl implements SeatServicePublish {
                 System.out.println("Updated available seats for event with ID " + event);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("");
         }
         // Display updated seat reservations after booking
         displaySeatReservation(event);
@@ -163,7 +163,7 @@ public class ServicePublishImpl implements SeatServicePublish {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("not update");
         }
     }
     
