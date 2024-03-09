@@ -59,13 +59,16 @@ public class EventScheduleSubscriberActivator implements BundleActivator {
 
 		System.out.println("Enter Event Ticket Price: ");
 		double ticketPrice = scanner.nextDouble();
+		
+		System.out.println("Enter Event Seat Price: ");
+		double seatPrice = scanner.nextDouble();
 
 		System.out.println("Enter Event budget: ");
 		double budget = scanner.nextDouble();
 		scanner.nextLine();// Consume newline character
 
 		// Call addEvent method to add the event
-		eventScheduleServicePublish.addEvent(eventName, date, startTime, endTime, venue, ticketPrice, budget);
+		eventScheduleServicePublish.addEvent(eventName, date, startTime, endTime, venue, ticketPrice, seatPrice, budget);
 	}
 
 }
