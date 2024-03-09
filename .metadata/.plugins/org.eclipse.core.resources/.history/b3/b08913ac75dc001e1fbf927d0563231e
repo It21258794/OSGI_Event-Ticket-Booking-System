@@ -1,0 +1,59 @@
+package profitcalculationsubscriber;
+
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+import profitcalculationpublisher.ProfitCalculationServicePublish;
+
+import java.util.Scanner;
+
+public class ProfitCalculationActivator implements BundleActivator {
+
+    private Scanner scanner;
+    private ServiceReference<ProfitCalculationServicePublish> profitServiceReference;
+    private ProfitCalculationServicePublish profitCalculationServicePublish;
+
+    @Override
+    public void start(BundleContext context) throws Exception {
+        this.scanner = new Scanner(System.in);
+
+        System.out.println("Started profit calculation Subscriber Service ");
+
+        // Get the reference to the ProfitCalculationServicePublish service
+        profitServiceReference = context.getServiceReference(ProfitCalculationServicePublish.class);
+        profitCalculationServicePublish = context.getService(profitServiceReference);
+
+        if (profitCalculationServicePublish == null) {
+            System.out.println("Profit calculation service not available.");
+        } else {
+            inputProfitDetails();
+        }
+    }
+
+    @Override
+    public void stop(BundleContext context) throws Exception {
+        // Unregister the service reference
+        context.ungetService(profitServiceReference);
+        System.out.println("Stopped Profit calculation Subscriber Service ");
+    }
+
+    private void inputProfitDetails() {
+        System.out.println("Enter Calculation ID:");
+        int calId = scanner.nextInt();
+
+        System.out.println("Enter Event ID:");
+        int eventId = scanner.nextInt();
+
+        System.out.println("Enter Income:");
+        double income = scanner.nextDouble();
+
+        System.out.println("Enter Budget:");
+        double budget = scanner.nextDouble();
+
+        System.out.println("Enter Profit:");
+        double profit = scanner.nextDouble();
+
+        // Call addProfit method to calculate and add the profit
+        profitCalculationServicePublish.addProfit(calId, eventId, income, budget, profit);
+    }
+}

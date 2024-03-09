@@ -1,0 +1,99 @@
+package profitcalculationpublisher;
+
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.mtit.databaseconnectionservice.DatabaseConnectionService;
+
+public class ProfitCalculationServiceImpl implements ProfitCalculationServicePublish {
+
+	private DatabaseConnectionService databaseConnectionService;
+	@Override
+	public void setDatabaseConnectionService(DatabaseConnectionService databaseConnectionService) {
+        this.databaseConnectionService = databaseConnectionService;
+    }
+	
+	@Override
+	public List<Profit> getEventsByDateRange(LocalDate startDate, LocalDate endDate){
+		
+		 List<Profit> events = new ArrayList<>();
+		
+		if (databaseConnectionService == null) {
+            System.err.println("DatabaseConnectionService is not set.");
+        }
+
+        Connection connection = databaseConnectionService.getConnection();
+        if (connection == null) {
+            System.err.println("Database connection is null.");
+        }
+        
+        try(PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM events WHERE event_date BETWEEN ? AND ?")) {
+        	
+        	//Execute the query
+        	ResultSet resultset = preparedStatement.executeQuery();
+        	while(resultset.next()) {
+        		Profit profit = new Profit();
+        		profit.setCalId(resultset.getInt("calId"));
+        		profit.setEventName(resultset.getString("eventName"));
+        		profit.setSoldTickets(resultset.getInt("soldTickets"));
+        		profit.setTicketPrice(resultset.getDouble("ticketPrice"));
+        		profit.setIncome(resultset.getDouble("income"));
+        		profit.setCost(resultset.getDouble("cost"));
+        		profit.setProfit(resultset.getDouble("profit"));
+        		
+        		events.add(profit);
+        	}
+        		
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return events;
+	}
+
+	@Override
+	public void addProfit(int calId, String eventName,int soldTickets ,double ticketPrice,double income, double cost, double profit ) { 
+		
+		 if (databaseConnectionService == null) {
+	            System.err.println("DatabaseConnectionService is not set.");
+	            return;
+	        }
+
+	        Connection connection = databaseConnectionService.getConnection();
+	        if (connection == null) {
+	            System.err.println("Database connection is null.");
+	            return;
+	        }
+
+		try (PreparedStatement statement = connection.prepareStatement(
+                "INSERT INTO profits (calId, eventName, soldTickets,ticketPrice, income, cost,profit ) VALUES (?, ?, ?, ?, ?, ?, ?)")) {
+            statement.setInt(1, calId);
+            statement.setString(2, eventName);
+            statement.setInt(3, soldTickets);
+            statement.setDouble(4, ticketPrice);
+            statement.setDouble(5, income);
+            statement.setDouble(6, cost);
+            statement.setDouble(7, profit);
+
+            int rowsInserted = statement.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("Calculate profit successfully.");
+            } else {
+                System.err.println("Failed to calculate profit.");
+            }
+        } catch (SQLException e) {
+            System.err.println("Error adding calculated profit to database: " + e.getMessage());
+            e.printStackTrace();
+        }
+		
+	}
+}

@@ -1,0 +1,51 @@
+package profitcalculationpublisher;
+
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceRegistration;
+
+import com.mtit.databaseconnectionservice.DatabaseConnectionService;
+import com.mtit.eventscheduleservice.EventScheduleServiceImpl;
+import com.mtit.eventscheduleservice.EventScheduleServicePublish;
+
+public class ProfitCalculationServiceActivator implements BundleActivator {
+
+//	private static BundleContext context;
+//
+//	static BundleContext getContext() {
+//		return context;
+//	}
+	
+	// Declare a object type of ServiceRegistration
+	ServiceRegistration publishProfitCalculateRegistration;
+	// Declare a object type of DatabaseConnectionService
+	private DatabaseConnectionService databaseConnectionService;
+	// Declare a object type of ServiceReference for dbService
+	ServiceReference dbServiceReference;
+	
+	public void start(BundleContext context) throws Exception {
+		System.out.println("Profit Calculate Publisher Started");
+		
+		// Get the DatabaseConnectionService from the OSGi service registry
+		dbServiceReference = context.getServiceReference(DatabaseConnectionService.class.getName());
+		databaseConnectionService = (DatabaseConnectionService)context.getService(dbServiceReference);
+
+		ProfitCalculationServicePublish profitCalculationServicePublish = new ProfitCalculationServiceImpl();
+		//pass the database connection to the method setDatabaseConnection
+		profitCalculationServicePublish.setDatabaseConnectionService(databaseConnectionService);
+
+		// Register the EventScheduleServicePublish implementation with the service registry
+		publishProfitCalculateRegistration = context.registerService(ProfitCalculationServicePublish.class.getName(), ProfitCalculationServicePublish, null);
+
+		
+	}
+
+
+	public void stop(BundleContext context) throws Exception {
+		System.out.println("Profit Calculation Publisher Stoped");
+		//unregister the EventScheduleServicePublish
+		publishProfitCalculateRegistration.unregister();
+	}
+
+}

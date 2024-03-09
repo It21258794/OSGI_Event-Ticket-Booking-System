@@ -3,14 +3,10 @@ package profitcalculationpublisher;
 public class Profit {
 
 	private int calId;
-	private String eventName;
-	private int soldTickets;
-	private double ticketPrice;
+	private int eventId;
 	private double income;
-	private double cost;
+	private double budget;
 	private double profit;
-	
-	
 	/**
 	 * @return the calId
 	 */
@@ -24,40 +20,16 @@ public class Profit {
 		this.calId = calId;
 	}
 	/**
-	 * @return the eventName
+	 * @return the eventId
 	 */
-	public String getEventName() {
-		return eventName;
+	public int getEventId() {
+		return eventId;
 	}
 	/**
-	 * @param eventName the eventName to set
+	 * @param eventId the eventId to set
 	 */
-	public void setEventName(String eventName) {
-		this.eventName = eventName;
-	}
-	/**
-	 * @return the soldTickets
-	 */
-	public int getSoldTickets() {
-		return soldTickets;
-	}
-	/**
-	 * @param soldTickets the soldTickets to set
-	 */
-	public void setSoldTickets(int soldTickets) {
-		this.soldTickets = soldTickets;
-	}
-	/**
-	 * @return the ticketPrice
-	 */
-	public double getTicketPrice() {
-		return ticketPrice;
-	}
-	/**
-	 * @param ticketPrice the ticketPrice to set
-	 */
-	public void setTicketPrice(double ticketPrice) {
-		this.ticketPrice = ticketPrice;
+	public void setEventId(int eventId) {
+		this.eventId = eventId;
 	}
 	/**
 	 * @return the income
@@ -72,16 +44,16 @@ public class Profit {
 		this.income = income;
 	}
 	/**
-	 * @return the cost
+	 * @return the budget
 	 */
-	public double getCost() {
-		return cost;
+	public double getBudget() {
+		return budget;
 	}
 	/**
-	 * @param cost the cost to set
+	 * @param budget the budget to set
 	 */
-	public void setCost(double cost) {
-		this.cost = cost;
+	public void setBudget(double budget) {
+		this.budget = budget;
 	}
 	/**
 	 * @return the profit
@@ -95,6 +67,6 @@ public class Profit {
 	public void setProfit(double profit) {
 		this.profit = profit;
 	}
-	
+		
 	
 	}

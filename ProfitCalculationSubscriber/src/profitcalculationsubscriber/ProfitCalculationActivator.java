@@ -35,21 +35,10 @@ public class ProfitCalculationActivator implements BundleActivator {
     }
 
     private void inputProfitDetails() {
-        System.out.println("Enter Event Name:");
-        String eventName = scanner.nextLine();
-
-        System.out.println("Enter Sold Tickets:");
-        int soldTickets = scanner.nextInt();
-
-        System.out.println("Enter Ticket Price:");
-        double ticketPrice = scanner.nextDouble();
-
-        System.out.println("Enter Cost:");
-        double cost = scanner.nextDouble();
-        double income= soldTickets*ticketPrice;
-   	 double profit = income - cost  ;
+        System.out.println("Enter Event Id:");
+        int eventId = scanner.nextInt();
 
         // Call addProfit method to calculate and add the profit
-        profitCalculationServicePublish.addProfit( 0,  eventName,  soldTickets,  ticketPrice,  income,  cost, profit) ;
+        profitCalculationServicePublish.addProfit( 0,  eventId,  0,  0, 0) ;
         }
 }

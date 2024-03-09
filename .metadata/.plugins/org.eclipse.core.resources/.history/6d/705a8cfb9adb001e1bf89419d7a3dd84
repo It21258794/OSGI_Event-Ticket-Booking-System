@@ -1,0 +1,17 @@
+package profitcalculationpublisher;
+
+import java.time.LocalDate;
+import java.util.List;
+
+import com.mtit.databaseconnectionservice.DatabaseConnectionService;
+import com.mtit.eventscheduleservice.Event;
+
+public interface ProfitCalculationServicePublish {
+
+//	List<Event> getEventsByDateRange(LocalDate startDate, LocalDate endDate);
+	void addProfit(int calId, String eventName, int soldTickets, double ticketPrice, double income, double cost,
+			double profit);
+	public void setDatabaseConnectionService(DatabaseConnectionService databaseConnectionService);
+	
+
+}

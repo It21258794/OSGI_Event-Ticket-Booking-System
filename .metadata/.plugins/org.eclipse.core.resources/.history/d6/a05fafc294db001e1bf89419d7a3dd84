@@ -1,0 +1,96 @@
+package profitcalculationpublisher;
+
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.mtit.databaseconnectionservice.DatabaseConnectionService;
+import com.mtit.eventscheduleservice.Event;
+
+public class ProfitCalculationServiceImpl implements ProfitCalculationServicePublish {
+
+    private DatabaseConnectionService databaseConnectionService;
+
+    @Override
+    public void setDatabaseConnectionService(DatabaseConnectionService databaseConnectionService) {
+        this.databaseConnectionService = databaseConnectionService;
+    }
+
+    // ... Other methods
+
+    @Override
+    public List<Event> getEventsByDateRange(LocalDate startDate, LocalDate endDate) {
+        // Existing code for fetching events by date range
+    }
+
+    @Override
+    public void addEvent(String eventName, String date, String startTime, String endTime, String venue,
+            double ticketPrice) {
+        // Existing code for adding events
+    }
+
+    @Override
+    public double calculateProfit(Event event) {
+        if (databaseConnectionService == null) {
+            System.err.println("DatabaseConnectionService is not set.");
+            return 0.0; // or throw an exception
+        }
+
+        Connection connection = databaseConnectionService.getConnection();
+        if (connection == null) {
+            System.err.println("Database connection is null.");
+            return 0.0; // or throw an exception
+        }
+
+        try (PreparedStatement preparedStatement = connection
+                .prepareStatement("SELECT cost FROM event_costs WHERE event_id = ?")) {
+            // Assuming you have a table 'event_costs' that stores the cost for each event
+            preparedStatement.setInt(1, event.getId());
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                double cost = resultSet.getDouble("cost");
+                double income = event.getTicketPrice() * event.getSoldTickets();
+                double profit = income - cost;
+
+                // Update the profit in the 'events' table or another appropriate place
+                updateProfitInDatabase(event.getId(), profit);
+
+                return profit;
+            } else {
+                System.err.println("Cost information not found for event with ID: " + event.getId());
+                return 0.0; // or handle appropriately
+            }
+        } catch (SQLException e) {
+            System.err.println("Error calculating profit: " + e.getMessage());
+            e.printStackTrace();
+            return 0.0;
+        }
+    }
+
+    private void updateProfitInDatabase(int eventId, double profit) {
+        try (PreparedStatement statement = databaseConnectionService.getConnection()
+                .prepareStatement("UPDATE events SET profit = ? WHERE id = ?")) {
+            statement.setDouble(1, profit);
+            statement.setInt(2, eventId);
+            int rowsUpdated = statement.executeUpdate();
+
+            if (rowsUpdated > 0) {
+                System.out.println("Profit updated successfully for event with ID: " + eventId);
+            } else {
+                System.err.println("Failed to update profit for event with ID: " + eventId);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error updating profit in database: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+}

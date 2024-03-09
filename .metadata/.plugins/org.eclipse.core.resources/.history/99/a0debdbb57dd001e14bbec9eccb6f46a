@@ -1,0 +1,70 @@
+package profitcalculationpublisher;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import com.mtit.databaseconnectionservice.DatabaseConnectionService;
+
+public class ProfitCalculationServiceImpl implements ProfitCalculationServicePublish {
+
+    private DatabaseConnectionService databaseConnectionService;
+
+    @Override
+    public void setDatabaseConnectionService(DatabaseConnectionService databaseConnectionService) {
+        this.databaseConnectionService = databaseConnectionService;
+    }
+
+    @Override
+    public void addProfit(int calId, int eventId, double income, double budget, double profit) {
+
+        if (databaseConnectionService == null) {
+            System.err.println("DatabaseConnectionService is not set.");
+            return;
+        }
+
+        Connection connection = databaseConnectionService.getConnection();
+        if (connection == null) {
+            System.err.println("Database connection is null.");
+            return;
+        }
+
+        try (PreparedStatement eventStatement = connection.prepareStatement("SELECT id, budget FROM events WHERE id = ?")) {
+            // Get the event details from the events table based on the provided eventId
+            eventStatement.setInt(1, eventId);
+
+            ResultSet eventResult = eventStatement.executeQuery();
+
+            if (eventResult.next()) {
+                int actualEventId = eventResult.getInt("id");
+                double actualBudget = eventResult.getDouble("budget");
+
+                try (PreparedStatement statement = connection.prepareStatement(
+                        "INSERT INTO profits (calId, eventId, income, budget, profit) VALUES (?, ?, ?, ?, ?)")) {
+                    // Insert the calculated profit along with the actual eventId and budget from the events table
+                    statement.setInt(1, calId);
+                    statement.setInt(2, actualEventId);
+                    statement.setDouble(3, income);
+                    statement.setDouble(4, actualBudget);
+                    statement.setDouble(5, profit);
+
+                    int rowsInserted = statement.executeUpdate();
+                    if (rowsInserted > 0) {
+                        System.out.println("Calculate profit successfully.");
+                    } else {
+                        System.err.println("Failed to calculate profit.");
+                    }
+                } catch (SQLException e) {
+                    System.err.println("Error adding calculated profit to database: " + e.getMessage());
+                    e.printStackTrace();
+                }
+            } else {
+                System.err.println("Event with ID " + eventId + " not found.");
+            }
+        } catch (SQLException e) {
+            System.err.println("Error retrieving event details: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+}
