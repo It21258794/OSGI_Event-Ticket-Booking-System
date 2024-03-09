@@ -8,6 +8,15 @@ public class Event {
 	private String endTime;
 	private String venue;
 	private double ticketPrice;
+	private double seatPrice;
+
+	public double getSeatPrice() {
+		return seatPrice;
+	}
+
+	public void setSeatPrice(double seatPrice) {
+		this.seatPrice = seatPrice;
+	}
 
 	public int getId() {
 		return id;
