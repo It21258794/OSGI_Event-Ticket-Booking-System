@@ -58,7 +58,7 @@ public class ServicePublishImpl implements SeatServicePublish {
             // Check available seats before booking
             int availableSeats = getAvailableSeats(connection, event, type);
             if (availableSeats < count) {
-                System.out.println("Not enough available seats of type " + type + " for booking.");
+                System.out.println("Not enough available seats for booking.");
                 return;
             }
 
@@ -132,7 +132,7 @@ public class ServicePublishImpl implements SeatServicePublish {
                             updateStatement.setInt(2, bookingId);
                             int rowsAffected = updateStatement.executeUpdate();
                             if (rowsAffected > 0) {
-                                System.out.println("Canceled booking for " + count + " " + type + " seats. Available seats updated.");
+                                System.out.println("Canceled booking for " + count + "Available seats updated");
                             } else {
                                 System.out.println("No booking found with ID " + bookingId);
                             }

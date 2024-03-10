@@ -41,7 +41,7 @@ public class Activator implements BundleActivator {
 
                 case 2:
                     System.out.println("\n***** Book Event For a Person *****");
-                    System.out.println("Enter event: ");
+                    System.out.println("Enter eventId: ");
                     int eventid = scanner.nextInt();
                     System.out.println("Enter name: ");
                     String name = scanner.next();

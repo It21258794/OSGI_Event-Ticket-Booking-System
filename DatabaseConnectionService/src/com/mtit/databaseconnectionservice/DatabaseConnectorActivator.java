@@ -29,7 +29,7 @@ public class DatabaseConnectorActivator implements BundleActivator {
 			// Establish the DB connection
 			String url = "jdbc:mysql://localhost:3306/osgi_event_ticket_booking_system";
 			String userName = "root";
-			String password = "2769";
+			String password = "hansani2001*";
 
 			// Register the DatabaseConnectionService
 			connection = DriverManager.getConnection(url, userName, password);
