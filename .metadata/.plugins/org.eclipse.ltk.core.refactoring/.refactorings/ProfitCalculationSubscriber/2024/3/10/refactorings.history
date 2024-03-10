@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<session version="1.0">
-<refactoring comment="Rename type &apos;profitcalculationsubscriber.Activator&apos; to &apos;ProfitCalculationActivator&apos;&#x0D;&#x0A;- Original project: &apos;ProfitCalculationSubscriber&apos;&#x0D;&#x0A;- Original element: &apos;profitcalculationsubscriber.Activator&apos;&#x0D;&#x0A;- Renamed element: &apos;profitcalculationsubscriber.ProfitCalculationActivator&apos;&#x0D;&#x0A;- Update references to refactored element&#x0D;&#x0A;- Update textual occurrences in comments and strings" description="Rename type &apos;Activator&apos;" flags="589830" id="org.eclipse.jdt.ui.rename.type" input="/src&lt;profitcalculationsubscriber{Activator.java[Activator" matchStrategy="1" name="ProfitCalculationActivator" qualified="false" references="true" similarDeclarations="false" stamp="1709694562270" textual="false" version="1.0"/>
-</session>
