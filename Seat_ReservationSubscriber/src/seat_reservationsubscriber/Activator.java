@@ -35,8 +35,8 @@ public class Activator implements BundleActivator {
                     System.out.println("\n***** Available Events *****");
                     System.out.println("***************************");
                     System.out.print("Enter any key to continue: ");
-                    int eventNumber = scanner.nextInt();
-                    servicePublish.getEvent(eventNumber);
+                    int id = scanner.nextInt();
+                    servicePublish.getEvent(id);
                     break;
 
                 case 2:
@@ -60,7 +60,7 @@ public class Activator implements BundleActivator {
                 case 3:
                     System.out.println("\n***** Cancel Booking *****");
                     System.out.println("Enter booking ID: ");
-                    String bookingId = scanner.next();
+                    int bookingId = scanner.nextInt();
                     servicePublish.cancelBooking(bookingId);
                     break;
 
