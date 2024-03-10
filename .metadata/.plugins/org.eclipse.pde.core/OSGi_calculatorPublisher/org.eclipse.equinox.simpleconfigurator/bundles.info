@@ -2,6 +2,7 @@
 #version=1
 DatabaseConnectionService,1.0.0.qualifier,file:/D:/SLIIT/Year-03/Sem-02/Software%20Architecture/Event%20Ticket%20Booking%20System/OSGI_Event-Ticket-Booking-System/DatabaseConnectionService/,4,true
 ProfitCalculationPublisher,1.0.0.qualifier,file:/D:/SLIIT/Year-03/Sem-02/Software%20Architecture/Event%20Ticket%20Booking%20System/OSGI_Event-Ticket-Booking-System/ProfitCalculationPublisher/,4,true
+ProfitDisplaySubscriber,1.0.0.qualifier,file:/D:/SLIIT/Year-03/Sem-02/Software%20Architecture/Event%20Ticket%20Booking%20System/OSGI_Event-Ticket-Booking-System/ProfitDisplaySubscriber/,4,true
 biz.aQute.bnd.util,6.3.1.202206071316,file:/D:/eclipse-jee-2022-09-R-win32-x86_64/eclipse/plugins/biz.aQute.bnd.util_6.3.1.202206071316.jar,4,true
 biz.aQute.bndlib,6.3.1.202206071316,file:/D:/eclipse-jee-2022-09-R-win32-x86_64/eclipse/plugins/biz.aQute.bndlib_6.3.1.202206071316.jar,4,true
 ch.qos.logback.classic,1.1.2.v20171220-1825,file:/D:/eclipse-jee-2022-09-R-win32-x86_64/eclipse/plugins/ch.qos.logback.classic_1.1.2.v20171220-1825.jar,4,true

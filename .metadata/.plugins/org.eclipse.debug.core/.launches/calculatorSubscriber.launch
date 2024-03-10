@@ -947,6 +947,7 @@
         <setEntry value="DatabaseConnectionService@default:default"/>
         <setEntry value="ProfitCalculationPublisher@default:default"/>
         <setEntry value="ProfitCalculationSubscriber@default:default"/>
+        <setEntry value="ProfitDisplaySubscriber@default:default"/>
     </setAttribute>
     <booleanAttribute key="show_selected_only" value="false"/>
     <booleanAttribute key="tracing" value="false"/>
