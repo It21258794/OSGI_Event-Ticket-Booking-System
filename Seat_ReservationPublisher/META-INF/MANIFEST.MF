@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Seat_ReservationPublisher
+Bundle-SymbolicName: Seat_ReservationPublisher
+Bundle-Version: 1.0.0.qualifier
+Export-Package: seat_reservationpublisher
+Bundle-Activator: seat_reservationpublisher.Activator
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: com.mtit.databaseconnectionservice,
+ org.osgi.framework

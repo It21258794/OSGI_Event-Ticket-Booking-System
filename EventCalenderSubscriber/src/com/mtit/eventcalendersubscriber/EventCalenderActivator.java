@@ -110,11 +110,13 @@ public class EventCalenderActivator implements BundleActivator {
 				String formattedEndTime = endTime.format(timeFormatter);
 
 				int ticketPrice = (int) event.getTicketPrice();
+				int seatPrice = (int) event.getSeatPrice();
 
 				System.out.println("* " + event.getEventName() + " (" + event.getEventDate() + ")");
 				System.out.println(" - Time: " + formattedStartTime + " - " + formattedEndTime);
 				System.out.println(" - Venue: " + event.getVenue());
-				System.out.println(" - Ticket Price: LKR" + ticketPrice); // Assuming getTicketPrice() returns a double
+				System.out.println(" - Ticket Price: LKR " + ticketPrice);
+				System.out.println(" - Seat Price: LKR " + seatPrice);
 				System.out.println();
 			}
 		}
