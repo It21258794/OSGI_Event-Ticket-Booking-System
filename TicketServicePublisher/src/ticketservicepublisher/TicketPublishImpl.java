@@ -1,94 +1,265 @@
 package ticketservicepublisher;
 
+import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
+
+import com.mtit.databaseconnectionservice.DatabaseConnectionService;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 
 public class TicketPublishImpl implements TicketPublish{
 
-	@Override
-	public String publishTickets() {
-		
-        String[] events = {"Event 1", "Event 2", "Event 3"};
-
-        // Print the menu
-        System.out.println("Select an event to 'click':");
-        for (int i = 0; i < events.length; i++) {
-            System.out.println((i + 1) + ". " + events[i]);
-        }
-
-        // Get user input
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Select Event: ");
-        
-        if (scanner.hasNextInt()) {
-            int selectedEvent = scanner.nextInt();
-
-            // Check if the selected index is valid
-            if (selectedEvent >= 1 && selectedEvent <= events.length) {
-                System.out.println("You Have Selected " + events[selectedEvent - 1]);
-                
-                scanner = new Scanner(System.in);
-                System.out.print("How many sections are needed: ");
-                
-                int sections = scanner.nextInt();
-                
-                scanner = new Scanner(System.in);
-                System.out.print("How many Tickets per section: ");
-                
-                int Tickets = scanner.nextInt();
-                
-                System.out.println("Available Tickets");
-                
-                for (int j = 0; j < sections; j++) {
-                    char letter = (char) ('A' + j);
-                    System.out.println("Section " + letter + ": " + Tickets);
-                }
-                
-                System.out.println("Total " + Tickets * sections);
-                    
-            } else {
-                System.out.println("Invalid input. Please enter a valid event.");
-            }
-        } else {
-            System.out.println("Invalid input. Please enter a valid number.");
-        }
-
-        // Close the scanner
-        scanner.close();
-    
-		
-		return "Excute Ticket Publishersss";
-	}
+	private DatabaseConnectionService databaseConnectionService;
+	private Connection connection;
+	ArrayList<Integer> eventIdList = new ArrayList<>();
+	ArrayList<String> eventNameList = new ArrayList<>();
+	
+	ArrayList<Integer> sectionIdList = new ArrayList<>();
+	ArrayList<Integer> sectionTicketList = new ArrayList<>();
+	ArrayList<String> sectionNameList = new ArrayList<>();
 
 	@Override
-	public String purchaseTickets() {
+	public void setDatabaseConnectionService(DatabaseConnectionService databaseConnectionService) {
+		this.databaseConnectionService = databaseConnectionService;
+	}
+	
+	@Override
+	public void getEvents() {
 		
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("How many Tickets: ");
-        
-        int sections = 3;
-        int currentSection = 0;
-        int availableTicketsPerSection = 5;
-        int totalTickets = scanner.nextInt();
-        int ticketCount = 1;
-        char letter = 'A';
-        
-        for (int j = 0; j < totalTickets; j++) {
-        if(availableTicketsPerSection<ticketCount){
-            currentSection++;
-            ticketCount = 1;
-        }
-                        
-        letter = (char) ('A' + currentSection);
-        int randomNumber = (int) (Math.random() * 10000) + 1;
-        System.out.println(letter + "" + randomNumber);
-        ticketCount++;
-               
-        }
+		int count = 0;
 		
-		return null;
+		if (databaseConnectionService == null) {
+			System.err.println("DatabaseConnectionService is not set.");
+		}
+
+		connection = databaseConnectionService.getConnection();
+		if (connection == null) {
+			System.err.println("Database connection is null.");
+		}
+		
+		try (PreparedStatement preparedStatement = connection
+				.prepareStatement("SELECT * FROM events")) {
+						
+			ResultSet resultset = preparedStatement.executeQuery();
+			
+			while (resultset.next()) {
+			    count++;
+			    String eventName = resultset.getString("name");
+			    int eventId = resultset.getInt("id");
+
+			    eventIdList.add(eventId);
+			    eventNameList.add(eventName);
+
+			    System.out.printf("%-3d. %-12s | Event ID: %-5d%n", count, eventName, eventId);
+			}
+
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		
+	}
+	
+	@Override
+	public void publishTickets(int selectedEvent, int sections, int tickets) {
+		
+		if(sectionTicketAvalabiity(selectedEvent)) {
+			System.out.println("Tickets have already been assigned to this event");
+			System.exit(0);
+		}
+		    
+		 if (selectedEvent >= 1 && selectedEvent <= eventNameList.size()) {
+			 System.out.printf("%nYou have selected: %s%n", eventNameList.get(selectedEvent - 1));
+			 System.out.printf("Available Tickets:%n");
+
+			 for (int j = 0; j < sections; j++) {
+			     char letter = (char) ('A' + j);
+			     System.out.printf("Section %c with %d Tickets", letter, tickets);
+			     addSection("Section " + letter, tickets, eventIdList.get(selectedEvent - 1));
+			 }
+		                		                
+			 int totalTickets = tickets * sections;
+			 System.out.println("Total Tickets Available: " + totalTickets);
+			 updateTicketCount(1, tickets * sections, tickets * sections, eventIdList.get(selectedEvent - 1));
+		                    
+		 } else {
+			 System.out.println("Invalid input. Please enter a valid event.");
+		 }
+		      
+	}
+	
+	@Override
+	public void purchaseTickets(int selectedEvent, int amount) {
+		try (PreparedStatement preparedStatement = connection
+				.prepareStatement("select * from osgi_event_ticket_booking_system.section s left join osgi_event_ticket_booking_system.events t ON s.EventID = t.id WHERE s.EventID = ?")) {
+			
+			preparedStatement.setInt(1, eventIdList.get(selectedEvent - 1));
+			
+			ResultSet resultset = preparedStatement.executeQuery();
+			Scanner scanner = new Scanner(System.in);
+			Random random = new Random();
+			
+			while (resultset.next()) {
+			    String sectionName = resultset.getString("Section");
+			    int sectionId = resultset.getInt("SectionId");
+			    int noOfTickets = resultset.getInt("NoOfTickets");
+			    int price = resultset.getInt("ticket_prize");
+			    
+			    if(noOfTickets >= amount) {
+			    	
+			    	System.out.println("Tickets are available");
+			    	System.out.println("Ticket Price: " + price);
+			    	System.out.println("Total Price: " + price * amount);
+			    	
+			    	System.out.println("Do you wish to continue (y/n)?");
+			    	String tickets = scanner.next();
+			    	
+			    	if (tickets.equals("n")) {
+			    	    System.out.println("Thank you, have a nice day!");
+			    	    System.exit(0);
+			    	} else if (!tickets.equals("y")) {
+			    	    System.out.println("Invalid input, please try again. ");
+			    	    System.exit(0);
+			    	}
+			    	
+					try (PreparedStatement updateStatement = connection
+							.prepareStatement("Update section SET NoOfTickets = ? Where SectionId = ?")) {
+						
+							updateStatement.setInt(1, noOfTickets - amount);
+							updateStatement.setInt(2, sectionId);
+							
+							int rowsUpdated = updateStatement.executeUpdate();
+							
+							if (rowsUpdated > 0) {
+								updateTicketCount(2, 0, amount,eventIdList.get(selectedEvent - 1));
+								System.out.println("Transaction successful");
+								System.out.println("Your tickets are,");
+								for(int i = 0; i < amount; i++) {
+									String ticketId = sectionName.charAt(sectionName.length() - 1) + " " + (10000 + random.nextInt(90000));
+									System.out.println(ticketId);
+									
+									try (PreparedStatement insertStatement = connection
+											.prepareStatement("INSERT INTO tickets(TicketID,EventID) VALUE(?,?)")) {
+										
+										insertStatement.setString(1, ticketId);
+										insertStatement.setInt(2, eventIdList.get(selectedEvent - 1));
+										int rowsInserted = insertStatement.executeUpdate();
+	
+										
+									} catch (SQLException e) {
+										e.printStackTrace();
+									}
+									
+								}
+							
+							} else {
+								System.err.println("Transaction unsuccessful");
+							}
+							
+						
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+					
+					break;
+			    	
+			    }
+
+			}
+			
+			
+		}  catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+	}
+	
+	@Override
+	public boolean sectionTicketAvalabiity(int eventId) {
+		try (PreparedStatement preparedStatement = connection
+				.prepareStatement("SELECT * FROM section WHERE EventID = ?")) {
+			
+			preparedStatement.setInt(1, eventId);
+			
+		    try (ResultSet resultSet = preparedStatement.executeQuery()) {
+		       return resultSet.next();
+		     }
+			
+		}  catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return false;
+		
 	}
 	
 	
+	public void addSection( String sectionName, int noOfTickets, int eventId){
+			    
+		try (PreparedStatement preparedStatement = connection
+				.prepareStatement("INSERT INTO Section(Section,NoOfTickets,EventID) VALUE(?,?,?)")) {
+			
+			preparedStatement.setString(1, sectionName);
+			preparedStatement.setInt(2, noOfTickets);
+			preparedStatement.setInt(3, eventId);
+			int rowsInserted = preparedStatement.executeUpdate();
+			if (rowsInserted > 0) {
+				System.out.println("✅︎");
+			} else {
+				System.err.println("❎");
+			}
+			
+		}  catch (SQLException e) {
+			e.printStackTrace();
+		}	
+	}
 	
-
+	public void updateTicketCount(int type, int total, int available, int eventId) {
+		
+		if(type == 1) {
+			try (PreparedStatement preparedStatement = connection
+					.prepareStatement("INSERT INTO ticketcount(TotalCount,Available,EventID,Type) VALUE(?,?,?,?)")) {
+				
+				preparedStatement.setInt(1, total);
+				preparedStatement.setInt(2, available);
+				preparedStatement.setInt(3, eventId);
+				preparedStatement.setString(4, "Ticket");
+				int rowsInserted = preparedStatement.executeUpdate();
+				if (rowsInserted > 0) {
+					System.out.println("Tickets added successfully.");
+				} else {
+					System.err.println("Failed to add Tickets.");
+				}
+				
+			}  catch (SQLException e) {
+				e.printStackTrace();
+			}	
+			
+		} else {
+			try (PreparedStatement preparedStatement = connection
+					.prepareStatement("Update ticketcount Set Available = Available - ? Where EventID = ?")) {
+				
+				preparedStatement.setInt(1, available);
+				preparedStatement.setInt(2, eventId);
+				int rowsInserted = preparedStatement.executeUpdate();
+				if (rowsInserted > 0) {
+					System.out.println("Updated successfully.");
+				} else {
+					System.err.println("Failed to add Update.");
+				}
+				
+			}  catch (SQLException e) {
+				e.printStackTrace();
+			}	
+			
+		}
+		
+	}
+	
 }
