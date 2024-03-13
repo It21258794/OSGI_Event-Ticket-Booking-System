@@ -13,7 +13,11 @@ public class ServiceActivator implements BundleActivator {
 
 	public void start(BundleContext context) throws Exception {
 		System.out.println("Start Subscriber Service");
+		
+		// Obtain the service reference
 		serviceReference = context.getServiceReference(TicketPublish.class.getName());
+		
+		// Retrieve the TicketPublish service
 		TicketPublish ticketPublish = (TicketPublish)context.getService(serviceReference);
 		getUserInput(ticketPublish);
 	}
@@ -25,8 +29,10 @@ public class ServiceActivator implements BundleActivator {
 	
 	public void getUserInput(TicketPublish ticketPublish) {
 		
+		//scanner object
         Scanner scanner = new Scanner(System.in);
 		
+        //print welcome screen
         System.out.println("╔══════════════════════════════╗");
         System.out.println("║   Welcome to the Ticketing   ║");
         System.out.println("║           System!            ║");
