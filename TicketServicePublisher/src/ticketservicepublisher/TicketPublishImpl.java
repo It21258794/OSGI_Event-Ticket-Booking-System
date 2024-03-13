@@ -123,7 +123,7 @@ public class TicketPublishImpl implements TicketPublish{
 			    String sectionName = resultset.getString("Section");
 			    int sectionId = resultset.getInt("SectionId");
 			    int noOfTickets = resultset.getInt("NoOfTickets");
-			    int price = resultset.getInt("ticket_prize");
+			    int price = resultset.getInt("ticket_price");
 			    
 			    //check if the section has enough tickets
 			    if(noOfTickets >= amount) {
