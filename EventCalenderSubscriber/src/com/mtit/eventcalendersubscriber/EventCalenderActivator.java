@@ -1,6 +1,7 @@
 package com.mtit.eventcalendersubscriber;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -65,7 +66,7 @@ public class EventCalenderActivator implements BundleActivator {
 		if (choice == 1) {
 			printCreativeCalendar(startDate, endDate, events);
 		} else {
-			printEventDetails(events);
+			printEventCards(events);
 		}
 
 	}
@@ -135,31 +136,56 @@ public class EventCalenderActivator implements BundleActivator {
 		}
 	}
 
-	private void printEventDetails(List<Event> events) {
-		// Print event details below the calendar
+
+	private void printEventCards(List<Event> events) {
 		if (!events.isEmpty()) {
-			System.out.println("\nEvents:");
-			for (Event event : events) {
-				// Parse event start and end times (assuming they're in "YYYY-MM-DD HH:MM:SS"
-				// format)
-				LocalTime startTime = LocalTime.parse(event.getStartTime().split(" ")[1]); // Extract time part
-				LocalTime endTime = LocalTime.parse(event.getEndTime().split(" ")[1]);
+		    System.out.println("======Upcoming Events=====");
 
-				// Format times using DateTimeFormatter
-				DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("hh:mm a");
-				String formattedStartTime = startTime.format(timeFormatter);
-				String formattedEndTime = endTime.format(timeFormatter);
+		    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy (hh:mm a)");
 
-				int ticketPrice = (int) event.getTicketPrice();
-				int seatPrice = (int) event.getSeatPrice();
+		    for (Event event : events) {
+		        System.out.println("=============================================");
 
-				System.out.println("* " + event.getEventName() + " (" + event.getEventDate() + ")");
-				System.out.println(" - Time: " + formattedStartTime + " - " + formattedEndTime);
-				System.out.println(" - Venue: " + event.getVenue());
-				System.out.println(" - Ticket Price: LKR " + ticketPrice);
-				System.out.println(" - Seat Price: LKR " + seatPrice);
-				System.out.println();
-			}
+		        // Event name (adjust spacing as needed)
+		        System.out.println("   " + event.getEventName() + "   ");
+
+		        // Parse date, start time, and end time separately
+		        LocalDate eventDate = LocalDate.parse(event.getEventDate());
+		        LocalTime startTime = LocalTime.parse(event.getStartTime().split(" ")[1]); // Extract start time part
+		        LocalTime endTime = LocalTime.parse(event.getEndTime().split(" ")[1]); // Extract end time part
+
+		        // Combine date and time into LocalDateTime
+		        LocalDateTime startDateTime = LocalDateTime.of(eventDate, startTime);
+		        LocalDateTime endDateTime = LocalDateTime.of(eventDate, endTime);
+
+		        // Format the combined datetime objects
+		        String formattedStartDateTime = startDateTime.format(dateTimeFormatter);
+		        String formattedEndDateTime = endDateTime.format(dateTimeFormatter);
+
+		        System.out.println("  - Start Time: " + formattedStartDateTime);
+		        System.out.println("  - End Time: " + formattedEndDateTime);
+
+		        // Venue
+		        System.out.println("  - Venue: " + event.getVenue());
+
+		        // Ticket Information
+		        int ticketPrice = (int) event.getTicketPrice();
+		        if (ticketPrice > 0) {
+		            System.out.println("  - Ticket Price: LKR " + ticketPrice);
+		        } else {
+		            System.out.println("  - Ticket Information: Check event details");
+		        }
+
+		        int seatPrice = (int) event.getSeatPrice();
+		        if (seatPrice > 0) {
+		            System.out.println("  - Seat Price: LKR " + seatPrice);
+		        } else {
+		            System.out.println("  - Seat Information: Check event details");
+		        }
+
+		        System.out.println("=============================================");
+		        System.out.println(); // Add a blank line between event cards
+		    }
 		} else {
 			System.out.println("No events found within the specified date range.");
 		}
