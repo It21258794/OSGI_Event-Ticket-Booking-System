@@ -52,7 +52,7 @@ public class ProfitCalculationServiceImpl implements ProfitCalculationServicePub
 				ticketPrice = eventResult.getDouble("ticket_price"); // Assign ticket_price value
 
 				try (PreparedStatement ticketStatement = connection.prepareStatement(
-						"SELECT TotalCount, Available, Type FROM ticketcount WHERE event_id = ? GROUP BY Type")) {
+						"SELECT TotalCount, Available, Type FROM ticketcount WHERE EventID = ? GROUP BY Type")) {
 					ticketStatement.setInt(1, actualEventId);
 					ResultSet ticketResult = ticketStatement.executeQuery();
 
