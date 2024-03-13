@@ -10,7 +10,7 @@ public interface EventScheduleServicePublish {
 	List<Event> getEventsByDateRange(LocalDate startDate, LocalDate endDate);
 
 	public void addEvent(String eventName, String date, String startTime, String endTime, String venue,
-			double ticketPrice, double budget);
+			double ticketPrice, double seatPrice, double budget);
 
 	public void setDatabaseConnectionService(DatabaseConnectionService databaseConnectionService);
 

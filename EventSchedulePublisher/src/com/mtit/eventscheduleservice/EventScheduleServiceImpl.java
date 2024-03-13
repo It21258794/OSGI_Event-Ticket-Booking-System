@@ -63,6 +63,7 @@ public class EventScheduleServiceImpl implements EventScheduleServicePublish {
 				event.setEndTime(resultset.getString("end_time"));
 				event.setVenue(resultset.getString("venue"));
 				event.setTicketPrice(resultset.getDouble("ticket_price"));
+				event.setSeatPrice(resultset.getDouble("seat_price"));
 
 				events.add(event);
 			}
@@ -76,7 +77,7 @@ public class EventScheduleServiceImpl implements EventScheduleServicePublish {
 
 	@Override
 	public void addEvent(String eventName, String date, String startTime, String endTime, String venue,
-			double ticketPrice, double budget) {
+			double ticketPrice, double seatPrice, double budget) {
 
 		// checks the databaseConnectionService is null
 		if (databaseConnectionService == null) {
@@ -103,14 +104,15 @@ public class EventScheduleServiceImpl implements EventScheduleServicePublish {
 		Timestamp eventEndTime = Timestamp.valueOf(endDateTime);
 
 		try (PreparedStatement statement = connection.prepareStatement(
-				"INSERT INTO events (name, event_date, start_time, end_time, venue, ticket_price,budget) VALUES (?, ?, ?, ?, ?, ?, ?)")) {
+				"INSERT INTO events (name, event_date, start_time, end_time, venue, ticket_price,seat_price,budget) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")) {
 			statement.setString(1, eventName);
 			statement.setString(2, date);
 			statement.setTimestamp(3, eventStartTime);
 			statement.setTimestamp(4, eventEndTime);
 			statement.setString(5, venue);
 			statement.setDouble(6, ticketPrice);
-			statement.setDouble(7, budget);
+			statement.setDouble(7, seatPrice);
+			statement.setDouble(8, budget);
 			int rowsInserted = statement.executeUpdate();
 			if (rowsInserted > 0) {
 				System.out.println("Event added successfully.");

@@ -56,7 +56,18 @@ public class EventCalenderActivator implements BundleActivator {
 		LocalDate endDate = LocalDate.parse(endDateStr, dateFormatter);
 
 		List<Event> events = eventScheduleServicePublish.getEventsByDateRange(startDate, endDate);
-		printCreativeCalendar(startDate, endDate, events);
+		// Ask for viewing preference
+		System.out.println("Choose how you want to view events:");
+		System.out.println("1. View events with calendar");
+		System.out.println("2. View events without calendar");
+		int choice = Integer.parseInt(scanner.nextLine());
+
+		if (choice == 1) {
+			printCreativeCalendar(startDate, endDate, events);
+		} else {
+			printEventDetails(events);
+		}
+
 	}
 
 	private void printCreativeCalendar(LocalDate startDate, LocalDate endDate, List<Event> events) {
@@ -110,13 +121,47 @@ public class EventCalenderActivator implements BundleActivator {
 				String formattedEndTime = endTime.format(timeFormatter);
 
 				int ticketPrice = (int) event.getTicketPrice();
+				int seatPrice = (int) event.getSeatPrice();
 
 				System.out.println("* " + event.getEventName() + " (" + event.getEventDate() + ")");
 				System.out.println(" - Time: " + formattedStartTime + " - " + formattedEndTime);
 				System.out.println(" - Venue: " + event.getVenue());
-				System.out.println(" - Ticket Price: LKR" + ticketPrice); // Assuming getTicketPrice() returns a double
+				System.out.println(" - Ticket Price: LKR " + ticketPrice);
+				System.out.println(" - Seat Price: LKR " + seatPrice);
 				System.out.println();
 			}
+		} else {
+			System.out.println("No events found within the specified date range.");
+		}
+	}
+
+	private void printEventDetails(List<Event> events) {
+		// Print event details below the calendar
+		if (!events.isEmpty()) {
+			System.out.println("\nEvents:");
+			for (Event event : events) {
+				// Parse event start and end times (assuming they're in "YYYY-MM-DD HH:MM:SS"
+				// format)
+				LocalTime startTime = LocalTime.parse(event.getStartTime().split(" ")[1]); // Extract time part
+				LocalTime endTime = LocalTime.parse(event.getEndTime().split(" ")[1]);
+
+				// Format times using DateTimeFormatter
+				DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("hh:mm a");
+				String formattedStartTime = startTime.format(timeFormatter);
+				String formattedEndTime = endTime.format(timeFormatter);
+
+				int ticketPrice = (int) event.getTicketPrice();
+				int seatPrice = (int) event.getSeatPrice();
+
+				System.out.println("* " + event.getEventName() + " (" + event.getEventDate() + ")");
+				System.out.println(" - Time: " + formattedStartTime + " - " + formattedEndTime);
+				System.out.println(" - Venue: " + event.getVenue());
+				System.out.println(" - Ticket Price: LKR " + ticketPrice);
+				System.out.println(" - Seat Price: LKR " + seatPrice);
+				System.out.println();
+			}
+		} else {
+			System.out.println("No events found within the specified date range.");
 		}
 	}
 
