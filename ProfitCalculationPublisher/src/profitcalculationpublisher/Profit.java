@@ -4,9 +4,11 @@ public class Profit {
 
 	private int calId;
 	private int eventId;
+	private String event_date;
 	private double income;
 	private double budget;
 	private double profit;
+	private double loss;
 	/**
 	 * @return the calId
 	 */
@@ -30,6 +32,15 @@ public class Profit {
 	 */
 	public void setEventId(int eventId) {
 		this.eventId = eventId;
+	}
+	public String getEvent_date() {
+		return event_date;
+	}
+	/**
+	 * @param eventId the eventId to set
+	 */
+	public void setEventDate(String event_date) {
+		this.event_date = event_date;
 	}
 	/**
 	 * @return the income
@@ -66,6 +77,16 @@ public class Profit {
 	 */
 	public void setProfit(double profit) {
 		this.profit = profit;
+	}
+	
+	public double getLoss() {
+		return loss;
+	}
+	/**
+	 * @param profit the profit to set
+	 */
+	public void setLoss(double loss) {
+		this.loss = loss;
 	}
 		
 	
